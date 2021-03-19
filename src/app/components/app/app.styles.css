@@ -1,15 +1,6 @@
-.logo {
-  width: 200px;
-}
-
-ul#menu li {
-  display:inline;
-  padding: 10px;
-}
-
-.title{
-  font-size: 3vw;
+.title {
+  font-size: 3rem;
   font-weight: bold;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  color: indigo;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: #4b0082;
 }

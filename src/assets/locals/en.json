@@ -6,5 +6,7 @@
   "PASSWORD_INVALID": "Please enter a valid password",
   "TODO": "Todo App",
   "ENTER_TITLE": "JTC",
-  "TITLE_INVALID": "Please enter a valid title"
+  "TITLE_INVALID": "Please enter a valid title",
+  "LABEL_LOADING_TODOS": "Loading Todos...",
+  "NO_INTERNET": "Please check your connectivity"
 }
