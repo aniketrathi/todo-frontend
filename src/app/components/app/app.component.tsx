@@ -1,10 +1,10 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import { Navbar, NavbarBrand } from "reactstrap";
 
 import { DIContext, getDependencies } from "@helpers";
 
 import "./app.styles.css";
+import TodoComponent from "../todo/todo.component";
 
 const App = (): JSX.Element => {
   const dependencies = React.useContext(DIContext);
@@ -12,16 +12,14 @@ const App = (): JSX.Element => {
   return (
     <DIContext.Provider value={getDependencies()}>
       <div className="center-wrap">
-        <Router>
-          <div>
-            <Navbar color="light" light expand="md">
-              <NavbarBrand href="/" className="title">{translation.t("TODO")}</NavbarBrand>
-            </Navbar>
-            <Switch>
-              {/* <Route exact path="/" component={HomeComponent} /> */}
-            </Switch>
-          </div>
-        </Router>
+        <div>
+          <Navbar color="light" light expand="md">
+            <NavbarBrand href="/" className="title">
+              {translation.t("TODO")}
+            </NavbarBrand>
+          </Navbar>
+          <TodoComponent />
+        </div>
       </div>
     </DIContext.Provider>
   );

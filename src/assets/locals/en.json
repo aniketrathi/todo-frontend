@@ -4,5 +4,7 @@
   "LABEL_LOADING_USERS": "Loading Users...",
   "USERNAME_INVALID": "Please enter a valid username",
   "PASSWORD_INVALID": "Please enter a valid password",
-  "TODO": "Todo App"
+  "TODO": "Todo App",
+  "ENTER_TITLE": "JTC",
+  "TITLE_INVALID": "Please enter a valid title"
 }
