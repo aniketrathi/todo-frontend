@@ -5,7 +5,7 @@ import { DIContext } from "@helpers";
 
 import "./todo.styles.css";
 
-const TodoComponent: React.FC = () => {
+const TodoComponent = (): JSX.Element => {
   const [title, setTitle] = React.useState<string>("");
   const [submitted, setSubmitted] = React.useState<boolean>(false);
 
@@ -29,21 +29,24 @@ const TodoComponent: React.FC = () => {
     <div>
       <Jumbotron fluid>
         <Container fluid>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} inline>
             <Label htmlFor="title"></Label>
-            <Input
-              type="text"
-              onChange={handleChange}
-              placeholder={translation.t("ENTER_TITLE")}
-              value={title}
-              id="title"
-            />
-            {submitted && !title && (
-              <div className="text-error">{translation.t("TITLE_INVALID")}</div>
-            )}
-            <br />
-            <Button>Submit</Button>
+            <div className="mx-auto">
+              <Input
+                type="text"
+                onChange={handleChange}
+                placeholder={translation.t("ENTER_TITLE")}
+                value={title}
+                id="title"
+              />
+              <Button>
+                <i className="fas fa-paper-plane"></i>
+              </Button>
+            </div>
           </Form>
+          {submitted && !title && (
+            <div className="text-error">{translation.t("TITLE_INVALID")}</div>
+          )}
         </Container>
       </Jumbotron>
     </div>

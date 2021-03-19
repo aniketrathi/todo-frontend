@@ -18,7 +18,7 @@ const App = (): JSX.Element => {
               {translation.t("TODO")}
             </NavbarBrand>
           </Navbar>
-          <TodoComponent />
+          {<TodoComponent />}
         </div>
       </div>
     </DIContext.Provider>

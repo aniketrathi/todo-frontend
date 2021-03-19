@@ -1,4 +1,8 @@
 .text-error {
-  font-size: 13px;
+  font-size: 15px;
   color: red;
+}
+
+#title {
+  border-bottom: 1px solid black;
 }
