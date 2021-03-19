@@ -1,0 +1,8 @@
+.text-error {
+  font-size: 15px;
+  color: #FF0000;
+}
+
+input#title {
+  border-bottom: 1px solid black;
+}
