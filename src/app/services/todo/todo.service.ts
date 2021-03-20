@@ -4,4 +4,5 @@ export interface TodoService {
   addTodo: (title: string) => Promise<ServiceResponse<TodoItem>>;
   getTodos: () => Promise<ServiceResponse<Todos>>;
   deleteTodo: (id: string, title: string) => Promise<ServiceResponse<TodoItem>>;
+  updateTodo: (id: string, title: string) => Promise<ServiceResponse<TodoItem>>;
 }

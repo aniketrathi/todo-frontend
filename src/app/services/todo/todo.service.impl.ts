@@ -51,4 +51,22 @@ export default class TodoServiceImpl
       );
     }
   }
+
+  async updateTodo(
+    id: string,
+    title: string
+  ): Promise<ServiceResponse<TodoItem>> {
+    try {
+      const response = await this.put(`${TodoServiceImpl.RESOURCE}/${id}`, {
+        title,
+      });
+      const todo = new TodoItem(response.data);
+      return new ServiceResponse<TodoItem>(todo);
+    } catch (e) {
+      return new ServiceResponse<TodoItem>(
+        undefined,
+        APIServiceImpl.parseError(e)
+      );
+    }
+  }  
 }
