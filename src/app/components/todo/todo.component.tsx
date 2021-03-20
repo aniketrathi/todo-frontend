@@ -84,7 +84,7 @@ const TodoComponent = (): JSX.Element => {
     await getAllTodos();
   }, []);
 
-  const handleDelete = async (id: string, title: string) => {
+  const handleDelete = async (id: string, title: string): Promise<void> => {
     setComponentState({ componentState: ComponentViewState.LOADING });
     const response = await todoService.deleteTodo(id, title);
     if (response.hasData() && response.data) {
@@ -99,26 +99,28 @@ const TodoComponent = (): JSX.Element => {
     }
   };
 
-  const todosList = todos.todos.map((el: TodoItem) => {
-    return (
-      <div key={el.id}>
-        <Card body inverse color="info" className="mx-auto">
-          <CardBody>
-            <CardTitle tag="h5">{el.title}</CardTitle>
-            <Button className="btn btn-warning">
-              <i className="fas fa-edit"></i>
-            </Button>
-            <Button
-              className="btn btn-danger"
-              onClick={() => handleDelete(el.id, el.title)}
-            >
-              <i className="fas fa-trash-alt"></i>
-            </Button>
-          </CardBody>
-        </Card>
-      </div>
-    );
-  });
+  const todosList = todos.todos.map(
+    (el: TodoItem): JSX.Element => {
+      return (
+        <div key={el.id}>
+          <Card body inverse color="info" className="mx-auto">
+            <CardBody>
+              <CardTitle tag="h5">{el.title}</CardTitle>
+              <Button className="btn btn-warning">
+                <i className="fas fa-edit"></i>
+              </Button>
+              <Button
+                className="btn btn-danger"
+                onClick={() => handleDelete(el.id, el.title)}
+              >
+                <i className="fas fa-trash-alt"></i>
+              </Button>
+            </CardBody>
+          </Card>
+        </div>
+      );
+    }
+  );
 
   return (
     <div>
