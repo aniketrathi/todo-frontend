@@ -39,7 +39,7 @@ export default class TodoServiceImpl
     title: string
   ): Promise<ServiceResponse<TodoItem>> {
     try {
-      const response = await this.delete(`TodoServiceImpl.RESOURCE/${id}`, {
+      const response = await this.delete(`${TodoServiceImpl.RESOURCE}/${id}`, {
         title,
       });
       const todo = new TodoItem(response.data);

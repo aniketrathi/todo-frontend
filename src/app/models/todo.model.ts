@@ -1,7 +1,7 @@
 export class TodoItem {
-  id: number;
+  id: string;
   title: string;
-  constructor(todo: { id: number; title: string }) {
+  constructor(todo: { id: string; title: string }) {
     this.id = todo.id;
     this.title = todo.title;
   }
