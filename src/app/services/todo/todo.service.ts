@@ -1,5 +1,6 @@
-import { TodoItem } from "@models";
+import { TodoItem, Todos } from "@models";
 import { ServiceResponse } from "../api";
 export interface TodoService {
   addTodo: (title: string) => Promise<ServiceResponse<TodoItem>>;
+  getTodos: () => Promise<ServiceResponse<Todos>>;
 }

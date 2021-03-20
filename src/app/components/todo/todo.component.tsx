@@ -1,5 +1,16 @@
 import * as React from "react";
-import { Jumbotron, Container, Form, Input, Label, Button } from "reactstrap";
+import { useAsyncEffect } from "use-async-effect";
+import {
+  Jumbotron,
+  Container,
+  Form,
+  Input,
+  Label,
+  Button,
+  Card,
+  CardTitle,
+  CardBody,
+} from "reactstrap";
 
 import { DIContext, ComponentViewState, ComponentState } from "@helpers";
 
@@ -8,9 +19,8 @@ import { TodoItem, Todos } from "@models";
 
 const TodoComponent = (): JSX.Element => {
   const [title, setTitle] = React.useState<string>("");
-  const [submitted, setSubmitted] = React.useState<boolean>(false);
-  // const [todos, setTodos] = React.useState<TodoItem[]>([]);
   const [todos, setTodos] = React.useState<Todos>({ todos: [] });
+  const [errorMessage, setErrorMessage] = React.useState("");
 
   const dependencies = React.useContext(DIContext);
   const { translation, todoService } = dependencies;
@@ -30,14 +40,13 @@ const TodoComponent = (): JSX.Element => {
   ): Promise<void> => {
     e.preventDefault();
     setComponentState({ componentState: ComponentViewState.LOADING });
-    setSubmitted(true);
     if (title) {
       const response = await todoService.addTodo(title);
       if (response.hasData() && response.data) {
         setComponentState({ componentState: ComponentViewState.LOADED });
         const newTodos = [...todos.todos, response.data];
-        // setTodos(newTodos);
         setTodos({ todos: newTodos });
+        setErrorMessage("");
       } else {
         const msg = response.error || translation.t("NO_INTERNET");
         setComponentState({
@@ -45,12 +54,54 @@ const TodoComponent = (): JSX.Element => {
           error: msg,
         });
       }
+      setTitle("");
+    } else {
+      setErrorMessage(translation.t("TITLE_INVALID"));
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
   };
+
+  const getAllTodos = async (): Promise<void> => {
+    setComponentState({ componentState: ComponentViewState.LOADING });
+    const response = await todoService.getTodos();
+    if (response.hasData() && response.data) {
+      setComponentState({ componentState: ComponentViewState.LOADED });
+      setTodos(response.data);
+    } else {
+      const msg = response.error || translation.t("NO_INTERNET");
+      setComponentState({
+        componentState: ComponentViewState.ERROR,
+        error: msg,
+      });
+    }
+  };
+
+  useAsyncEffect(async (): Promise<void> => {
+    await getAllTodos();
+  }, []);
+
+  const todosList = todos.todos.map(
+    (el: TodoItem): JSX.Element => {
+      return (
+        <div key={el.id}>
+          <Card body inverse color="info" className="mx-auto">
+            <CardBody>
+              <CardTitle tag="h5">{el.title}</CardTitle>
+              <Button className="btn btn-warning">
+                <i className="fas fa-edit"></i>
+              </Button>
+              <Button className="btn btn-danger">
+                <i className="fas fa-trash-alt"></i>
+              </Button>
+            </CardBody>
+          </Card>
+        </div>
+      );
+    }
+  );
 
   return (
     <div>
@@ -71,11 +122,10 @@ const TodoComponent = (): JSX.Element => {
               </Button>
             </div>
           </Form>
-          {submitted && !title && (
-            <div className="text-error">{translation.t("TITLE_INVALID")}</div>
-          )}
+          {errorMessage && <div className="text-error">{errorMessage}</div>}
         </Container>
       </Jumbotron>
+      {todosList}
       {isError && <div> {error} </div>}
     </div>
   );
