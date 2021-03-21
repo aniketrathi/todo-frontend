@@ -77,7 +77,7 @@ const TodoComponent = (): JSX.Element => {
     const response = await todoService.updateTodo(id, title);
     if (response.hasData() && response.data) {
       setComponentState({ componentState: ComponentViewState.LOADED });
-      const newtodos: any = todos.todos.map((todo: TodoItem) =>
+      const newtodos: any = todos.todos.map((todo: TodoItem): any =>
         todo.id === id ? response.data : todo
       );
       setTodos({ todos: newtodos });
@@ -95,7 +95,7 @@ const TodoComponent = (): JSX.Element => {
     const response = await todoService.deleteTodo(id, title);
     if (response.hasData() && response.data) {
       setComponentState({ componentState: ComponentViewState.LOADED });
-      setTodos({ todos: todos.todos.filter((todo) => todo.id !== id) });
+      setTodos({ todos: todos.todos.filter((todo): any => todo.id !== id) });
     } else {
       const msg = response.error || translation.t("NO_INTERNET");
       setComponentState({

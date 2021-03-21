@@ -8,7 +8,7 @@ import {
   Label,
   Input,
 } from "reactstrap";
-import { TodoItem, Todos } from "@models";
+import { TodoItem } from "@models";
 import { DIContext } from "@helpers";
 import "./todo.styles.css";
 
@@ -25,7 +25,7 @@ const TodoItems = ({
 }: Props): JSX.Element => {
   const dependencies = React.useContext(DIContext);
   const { translation } = dependencies;
-  const [edit, setEdit] = React.useState<Boolean>(false);
+  const [edit, setEdit] = React.useState<boolean>(false);
   const [editTitle, setEditTitle] = React.useState<string>(todo.title);
   const [error, setError] = React.useState<string>("");
 
@@ -76,7 +76,7 @@ const TodoItems = ({
             </Button>
             <Button
               className="btn btn-danger"
-              onClick={() => handleDelete(todo.id, todo.title)}
+              onClick={(): Promise<void> => handleDelete(todo.id, todo.title)}
             >
               <i className="fas fa-trash-alt"></i>
             </Button>
