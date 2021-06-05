@@ -1,16 +1,17 @@
 import * as React from "react";
+import { useAsyncEffect } from "use-async-effect";
 import { Jumbotron, Container, Form, Input, Label, Button } from "reactstrap";
 
 import { DIContext, ComponentViewState, ComponentState } from "@helpers";
 
 import "./todo.styles.css";
 import { TodoItem, Todos } from "@models";
+import TodoItems from "./todo.list";
 
 const TodoComponent = (): JSX.Element => {
   const [title, setTitle] = React.useState<string>("");
-  const [submitted, setSubmitted] = React.useState<boolean>(false);
-  // const [todos, setTodos] = React.useState<TodoItem[]>([]);
   const [todos, setTodos] = React.useState<Todos>({ todos: [] });
+  const [errorMessage, setErrorMessage] = React.useState<string>("");
 
   const dependencies = React.useContext(DIContext);
   const { translation, todoService } = dependencies;
@@ -21,8 +22,6 @@ const TodoComponent = (): JSX.Element => {
 
   const { componentState, error } = state;
 
-  const isLoaded = componentState === ComponentViewState.LOADED;
-  const isLoading = componentState === ComponentViewState.LOADING;
   const isError = componentState === ComponentViewState.ERROR;
 
   const handleSubmit = async (
@@ -30,14 +29,13 @@ const TodoComponent = (): JSX.Element => {
   ): Promise<void> => {
     e.preventDefault();
     setComponentState({ componentState: ComponentViewState.LOADING });
-    setSubmitted(true);
     if (title) {
       const response = await todoService.addTodo(title);
       if (response.hasData() && response.data) {
         setComponentState({ componentState: ComponentViewState.LOADED });
         const newTodos = [...todos.todos, response.data];
-        // setTodos(newTodos);
         setTodos({ todos: newTodos });
+        setErrorMessage("");
       } else {
         const msg = response.error || translation.t("NO_INTERNET");
         setComponentState({
@@ -45,12 +43,80 @@ const TodoComponent = (): JSX.Element => {
           error: msg,
         });
       }
+      setTitle("");
+    } else {
+      setErrorMessage(translation.t("TITLE_INVALID"));
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setTitle(e.target.value);
   };
+
+  const getAllTodos = async (): Promise<void> => {
+    setComponentState({ componentState: ComponentViewState.LOADING });
+    const response = await todoService.getTodos();
+    if (response.hasData() && response.data) {
+      setComponentState({ componentState: ComponentViewState.LOADED });
+      setTodos(response.data);
+    } else {
+      const msg = response.error || translation.t("NO_INTERNET");
+      setComponentState({
+        componentState: ComponentViewState.ERROR,
+        error: msg,
+      });
+    }
+  };
+
+  useAsyncEffect(async (): Promise<void> => {
+    await getAllTodos();
+  }, []);
+
+  const handleUpdate = async (id: string, title: string): Promise<void> => {
+    setComponentState({ componentState: ComponentViewState.LOADING });
+    const response = await todoService.updateTodo(id, title);
+    if (response.hasData() && response.data) {
+      setComponentState({ componentState: ComponentViewState.LOADED });
+      const newtodos: any = todos.todos.map((todo: TodoItem): any =>
+        todo.id === id ? response.data : todo
+      );
+      setTodos({ todos: newtodos });
+    } else {
+      const msg = response.error || translation.t("NO_INTERNET");
+      setComponentState({
+        componentState: ComponentViewState.ERROR,
+        error: msg,
+      });
+    }
+  };
+
+  const handleDelete = async (id: string, title: string): Promise<void> => {
+    setComponentState({ componentState: ComponentViewState.LOADING });
+    const response = await todoService.deleteTodo(id, title);
+    if (response.hasData() && response.data) {
+      setComponentState({ componentState: ComponentViewState.LOADED });
+      setTodos({ todos: todos.todos.filter((todo): any => todo.id !== id) });
+    } else {
+      const msg = response.error || translation.t("NO_INTERNET");
+      setComponentState({
+        componentState: ComponentViewState.ERROR,
+        error: msg,
+      });
+    }
+  };
+
+  const todosList = todos.todos.map(
+    (el: TodoItem): JSX.Element => {
+      return (
+        <TodoItems
+          key={el.id}
+          todo={el}
+          handleDelete={handleDelete}
+          handleUpdate={handleUpdate}
+        />
+      );
+    }
+  );
 
   return (
     <div>
@@ -71,11 +137,10 @@ const TodoComponent = (): JSX.Element => {
               </Button>
             </div>
           </Form>
-          {submitted && !title && (
-            <div className="text-error">{translation.t("TITLE_INVALID")}</div>
-          )}
+          {errorMessage && <div className="text-error">{errorMessage}</div>}
         </Container>
       </Jumbotron>
+      {todosList}
       {isError && <div> {error} </div>}
     </div>
   );
